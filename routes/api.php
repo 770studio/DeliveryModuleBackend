@@ -30,4 +30,8 @@ JsonApi::register('default')->routes(function ($api) {
     $api->resource('statuses')->relationships(function ($relations) {
 
     });
+
+    $api->resource('settings')->relationships(function ($relations) {
+
+    });
 });

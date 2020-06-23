@@ -69,6 +69,7 @@ return [
         'drivers' => \App\Driver::class,
         'pings' => \App\Ping::class,
         'statuses' => \App\OrderStatus::class,
+        'settings' => \App\Settings::class,
     ],
 
     /*

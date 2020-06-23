@@ -1,6 +1,6 @@
 <?php
 
-namespace App\JsonApi\Statuses;
+namespace App\JsonApi\Settings;
 
 use Neomerx\JsonApi\Schema\SchemaProvider;
 
@@ -10,7 +10,7 @@ class Schema extends SchemaProvider
     /**
      * @var string
      */
-    protected $resourceType = 'statuses';
+    protected $resourceType = 'settings';
 
     /**
      * @param \App\Driver $resource
@@ -31,11 +31,10 @@ class Schema extends SchemaProvider
     {
         return [
             'name' => $resource->name,
-            'index' => $resource->index,
-            'is_rejectable' => $resource->is_rejectable,
-            'is_initial' => $resource->is_initial,
-            'is_final' => $resource->is_final,
-           // 'parent_id' => 0,
+            'value' => $resource->value,
+            'setting_type' => $resource->setting_type,
+
+
 
         ];
     }
