@@ -34,8 +34,12 @@ class Schema extends SchemaProvider
             'device_id' => $resource->device_id,
             'blocked' => $resource->blocked,
             'available' => $resource->available,
-           // 'created-at' => $resource->created_at->toAtomString(),
-           // 'updated-at' => $resource->updated_at->toAtomString(),
+            'lat' => $resource->lat,
+            'long' => $resource->long,
+            'order_id' => $resource->order_id,
+            'order_status' => $resource->order_status,
+             'created-at' => $resource->created_at->toAtomString(),
+             'updated-at' => $resource->updated_at->toAtomString(),
         ];
     }
 

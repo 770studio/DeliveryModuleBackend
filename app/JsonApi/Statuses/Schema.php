@@ -35,6 +35,7 @@ class Schema extends SchemaProvider
             'is_rejectable' => $resource->is_rejectable,
             'is_initial' => $resource->is_initial,
             'is_final' => $resource->is_final,
+            'caption' => $resource->status_caption,
            // 'parent_id' => 0,
 
         ];
