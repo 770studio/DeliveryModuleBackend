@@ -20,14 +20,14 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 
 JsonApi::register('default')->routes(function ($api) {
-    $api->resource('drivers')->relationships(function ($relations) {
-        $relations->hasOne('ping');
+    $api->resource('driver_vehicles')->relationships(function ($relations) {
+
     });
     $api->resource('pings')->relationships(function ($relations) {
-        $relations->hasOne('driver');
+
     });
 
-    $api->resource('statuses')->relationships(function ($relations) {
+    $api->resource('order_status')->relationships(function ($relations) {
 
     });
 

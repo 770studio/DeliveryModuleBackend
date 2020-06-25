@@ -1,6 +1,6 @@
 <?php
 
-namespace App\JsonApi\Drivers;
+namespace App\JsonApi\DriverVehicles;
 
 use CloudCreativity\LaravelJsonApi\Eloquent\AbstractAdapter;
 use CloudCreativity\LaravelJsonApi\Pagination\StandardStrategy;
@@ -44,9 +44,5 @@ class Adapter extends AbstractAdapter
         $this->filterWithScopes($query, $filters);
     }
 
-    protected function ping()
-    {
-        return $this->hasOne();
-    }
 
 }

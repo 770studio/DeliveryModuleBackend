@@ -1,6 +1,6 @@
 <?php
 
-namespace App\JsonApi\Statuses;
+namespace App\JsonApi\DriverVehicles;
 
 use Neomerx\JsonApi\Schema\SchemaProvider;
 
@@ -10,7 +10,7 @@ class Schema extends SchemaProvider
     /**
      * @var string
      */
-    protected $resourceType = 'statuses';
+    protected $resourceType = 'driver_vehicles';
 
     /**
      * @param \App\Driver $resource
@@ -31,13 +31,15 @@ class Schema extends SchemaProvider
     {
         return [
             'name' => $resource->name,
-            'index' => $resource->index,
-            'is_rejectable' => $resource->is_rejectable,
-            'is_initial' => $resource->is_initial,
-            'is_final' => $resource->is_final,
-            'caption' => $resource->status_caption,
-           // 'parent_id' => 0,
-
+            'device_id' => $resource->device_id,
+            'blocked' => $resource->blocked,
+            'available' => $resource->available,
+            'lat' => $resource->lat,
+            'long' => $resource->long,
+            'order_id' => $resource->order_id,
+            'order_status' => $resource->order_status,
+             'created-at' => $resource->created_at->toAtomString(),
+             'updated-at' => $resource->updated_at->toAtomString(),
         ];
     }
 
@@ -45,7 +47,10 @@ class Schema extends SchemaProvider
     public function getRelationships($resource, $isPrimary, array $includeRelationships)
     {
         return [
-
+            'ping' => [
+                self::SHOW_SELF => true,
+                self::SHOW_RELATED => true,
+            ]
         ];
     }
 

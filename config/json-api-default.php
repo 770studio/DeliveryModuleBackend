@@ -66,9 +66,9 @@ return [
     | `'posts' => App\Post::class`
     */
     'resources' => [
-        'drivers' => \App\Driver::class,
+        'driver_vehicles' => \App\Driver::class,
         'pings' => \App\Ping::class,
-        'statuses' => \App\OrderStatus::class,
+        'order_status' => \App\OrderStatus::class,
         'settings' => \App\Settings::class,
     ],
 

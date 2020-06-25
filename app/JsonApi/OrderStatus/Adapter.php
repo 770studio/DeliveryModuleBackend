@@ -1,6 +1,6 @@
 <?php
 
-namespace App\JsonApi\Statuses;
+namespace App\JsonApi\OrderStatus;
 
 use CloudCreativity\LaravelJsonApi\Eloquent\AbstractAdapter;
 use CloudCreativity\LaravelJsonApi\Pagination\StandardStrategy;
