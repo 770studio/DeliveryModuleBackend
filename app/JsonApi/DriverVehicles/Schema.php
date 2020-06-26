@@ -32,8 +32,8 @@ class Schema extends SchemaProvider
         return [
             'name' => $resource->name,
             'device_id' => $resource->device_id,
-            'blocked' => $resource->blocked,
-            'available' => $resource->available,
+            'blocked' => (bool) $resource->blocked,
+            'available' => (bool) $resource->available,
             'lat' => $resource->lat,
             'long' => $resource->long,
             'order_id' => $resource->order_id,

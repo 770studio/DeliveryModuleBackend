@@ -18,7 +18,7 @@ class DriverWiden extends Migration
             $table->decimal('lat', 20, 15)->nullable()->default(null);
             $table->decimal('long', 20, 15)->nullable()->default(null);
             $table->unsignedSmallInteger('count')->default(1);
-            $table->string('order_status', 25)->default('');
+            $table->boolean('order_status')->nullable()->default(null);
             $table->integer('order_id')->index('order')->default(0);
             $table->text('rejected_orders')->nullable()->default(null);
 
