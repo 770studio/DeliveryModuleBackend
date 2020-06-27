@@ -14,7 +14,8 @@
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^6.3",
         "laravel/framework": "^7.0",
-        "laravel/tinker": "^2.0"
+        "laravel/tinker": "^2.0",
+        "spatie/geocoder": "^3.8"
     },
     "require-dev": {
         "cloudcreativity/json-api-testing": "^3.0",

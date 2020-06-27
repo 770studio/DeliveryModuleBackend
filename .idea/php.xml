@@ -111,6 +111,7 @@
       <path value="$PROJECT_DIR$/vendor/php-http/message-factory" />
       <path value="$PROJECT_DIR$/vendor/nyholm/psr7" />
       <path value="$PROJECT_DIR$/vendor/cloudcreativity/json-api-testing" />
+      <path value="$PROJECT_DIR$/vendor/spatie/geocoder" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.2" />

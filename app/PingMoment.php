@@ -3,11 +3,12 @@
 namespace App;
 
 
-use Illuminate\Database\Eloquent\Model;
 
-class Ping extends Model
+class PingMoment extends Ping
 {
+    protected $table = 'pings_detailed';
     protected $fillable = ['lat', 'long', 'order_status', 'order_id', 'count'];
+
 /*
     public function driver()
     {
