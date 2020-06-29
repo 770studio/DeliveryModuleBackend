@@ -5,25 +5,41 @@ namespace App;
 
 
 use Illuminate\Database\Eloquent\Model;
+use mysql_xdevapi\Exception;
+
 
 class DeliveryOrder extends Model
 {
     protected $table = 'deliveryorder';
     protected static $do_status = [
         'Not started' => 0,
-        'In progress' => 1,
-        'On hold' => 2,
-        'Cancelled' => 3,
+        'In progress' => 2,
+        'Got the location' => 3,
+        'Geocoder error' => 4,
+        'On hold' => 7,
+        'Cancelled' => 9,
         'Completed' => 10,
 
 
     ];
 
-
-
-    public static function getJob()
+    public function setJobState(  $state )
     {
-        return self::where('current_status', self::getOrderStatus('Not started') )->first();
+        $status = @self::getOrderStatus($state) ;
+        if(!$status) throw new Exception('Uncatchable: Wrong state name');
+        $this->current_status =  $status  ;
+        if(! $this->save() ) {
+            // TODO critical
+        }
+
+       ;
+    }
+
+    public static function getJob( $geoJob = false )
+    {
+
+        $state = $geoJob ? 'Not started' : 'Got the location'; // either it is geo or assignment  task
+        return self::where('current_status', self::getOrderStatus($state) )->first();
     }
     public static function getOrderStatus( $status_name )
     {

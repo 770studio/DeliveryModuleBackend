@@ -1,11 +1,22 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\OrderStatus;
+use CloudCreativity\LaravelJsonApi\Facades\JsonApi;
+use CloudCreativity\LaravelJsonApi\Http\Controllers\JsonApiController;
 use Illuminate\Http\Request;
+use App\Driver;
+use Illuminate\Support\Facades\DB;
 
-class Ping extends Controller
+class Ping extends JsonApiController
 {
-  function checkin(Request $request ) {
+
+  function __construct()
+  {
+      DB::connection()->enableQueryLog();
+  }
+
+    function checkin(Request $request ) {
 /*
       1. obtain location update from  driver
       2. response with the current status and "basic config"
@@ -19,6 +30,34 @@ class Ping extends Controller
 
 */
 
-      dd(66655555555, $request, $request->d);
+      //dd(66655555555, $request, $request->d);
+
+
+
+       $order_statuses = OrderStatus::asc();
+       $status_completed = $order_statuses->last();
+
+      // dd($status_completed->status_caption);
+
+
+      $device_id = $request->d;
+
+      #TODO security check via headers SIGNATURE
+
+       $driver = Driver::where('device_id', $device_id)->where('blocked', 0 )->first();
+ //            return $this->reply()->content( collect(['items'=> ['error'=> true, 'errmsg'=> 'Driver doesnt exist' ] ])    );
+       if( !$driver  ) {
+           return $this->reply()->meta(['error'=> true, 'errmsg'=> 'Driver blocked or doesnt exist' ], 405   ) ;
+       }
+
+       if( $driver->hasAssignment() ) {
+           //TODO reply with
+       }
+
+        dd($driver->hasAssignment(), DB::getQueryLog() );
+     //  if( $driver->hasAssignment()  )
+       // insert it
+       dd($driver);
+
   }
 }

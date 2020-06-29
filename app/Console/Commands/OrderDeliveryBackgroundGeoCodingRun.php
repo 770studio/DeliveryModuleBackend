@@ -2,19 +2,18 @@
 
 namespace App\Console\Commands;
 
-use App\GeoLocation;
-use App\Http\Controllers\OrderDeliveryService;
+
+use App\Http\Controllers\GeoCoder;
 use Illuminate\Console\Command;
 
-
-class OrderDeliveryServiceConsoleCommand extends Command
+class OrderDeliveryBackgroundGeoCodingRun extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'dservice:run';
+    protected $signature = 'geocoder:run';
 
     /**
      * The console command description.
@@ -36,18 +35,11 @@ class OrderDeliveryServiceConsoleCommand extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @return int
      */
     public function handle()
     {
-
-        OrderDeliveryService::RunWithCron();
-
-
-
-
-
-
-
+       echo  GeoCoder::RunWithCron();
+        // Geocoder::getCoordinatesForAddress('Samberstraat 69, Antwerpen, Belgium')
     }
 }
