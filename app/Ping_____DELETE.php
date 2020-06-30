@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Neomerx\JsonApi\Document\Error as NeomerxError;
 use Neomerx\JsonApi\Exceptions\JsonApiException;
 
-class Ping extends Model
+class PingDELETE extends Model
 {
     protected $fillable = ['lat', 'long',  'order_status', 'order_id', 'count', 'driver_id'];
 /*
@@ -73,7 +73,7 @@ class Ping extends Model
 
         #TODO security check via headers SIGNATURE
 
-        $driver = Driver::where('device_id', $device_id)->where('blocked', 0 )->with('PingState')->first();
+        $driver = Driver::where('device_id', $device_id)->where('blocked', 0 )->first();
 
         if( !$driver  ) {
 

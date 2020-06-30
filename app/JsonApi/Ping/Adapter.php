@@ -2,7 +2,8 @@
 
 namespace App\JsonApi\Ping;
 
-use App\Ping;
+use App\Driver;
+use App\PingDELETE;
 use CloudCreativity\LaravelJsonApi\Eloquent\AbstractAdapter;
 use CloudCreativity\LaravelJsonApi\Pagination\StandardStrategy;
 use Illuminate\Database\Eloquent\Builder;
@@ -13,6 +14,9 @@ use Neomerx\JsonApi\Exceptions\JsonApiException;
 
 class Adapter extends AbstractAdapter
 {
+
+
+    protected $primaryKey = 'device_id';
 
     /**
      * Mapping of JSON API attribute field names to model keys.
@@ -35,7 +39,15 @@ class Adapter extends AbstractAdapter
      */
     public function __construct(StandardStrategy $paging)
     {
-        parent::__construct(new Ping(), $paging);
+
+
+        parent::__construct(new Driver(), $paging);
+
+
+
+
+
+
     }
 
     /**
@@ -54,7 +66,15 @@ class Adapter extends AbstractAdapter
      * @param $resource
      * @return void
      */
-    protected function creating( Ping $ping, $resource)
+
+
+    protected function reading( $record, $request) {
+
+
+    }
+
+
+    protected function creating(PingDELETE $ping, $resource)
     {
 /*
 $error =  new NeomerxError(

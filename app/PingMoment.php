@@ -4,15 +4,15 @@ namespace App;
 
 
 
-class PingMoment extends Ping
+class PingMoment extends model
 {
     protected $table = 'pings_detailed';
-    protected $fillable = ['lat', 'long', 'order_status', 'order_id', 'count'];
+    protected $fillable = ['lat', 'long',  'order_status', 'order_id', 'count', 'driver_id'];
 
-/*
-    public function driver()
+    public function Driver()
     {
         return $this->belongsTo('App\Driver');
-    }*/
+    }
+
 
 }

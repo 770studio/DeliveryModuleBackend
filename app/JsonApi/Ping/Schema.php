@@ -13,7 +13,7 @@ class Schema extends SchemaProvider
     protected $resourceType = 'ping';
 
     /**
-     * @param \App\Ping $resource
+     * @param \App\PingDELETE $resource
      *      the domain record being serialized.
      * @return string
      */
@@ -23,18 +23,24 @@ class Schema extends SchemaProvider
     }
 
     /**
-     * @param \App\Ping $resource
+     * @param \App\PingDELETE $resource
      *      the domain record being serialized.
      * @return array
      */
-    public function getAttributes($resource)
-    {   dd(9999999, $resource->Driver->hasAssignment() );
+    public function getAttributes($Driver)
+    {
+
+        //dd(9999999,$resource, $resource->hasAssignment()  ); // $resource->Driver->hasAssignment(
       //  $driver->hasAssignment();
+        #TODO security check via headers SIGNATURE
 
 
-        return [
-            'created-at' => $resource->created_at->toAtomString(),
-            'updated-at' => $resource->updated_at->toAtomString(),
+
+
+        return  $Driver->checkin() +
+            [
+            'created-at' => $Driver->created_at->toAtomString(),
+            'updated-at' => $Driver->updated_at->toAtomString(),
         ];
     }
 }

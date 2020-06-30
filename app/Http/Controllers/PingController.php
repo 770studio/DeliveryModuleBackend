@@ -7,10 +7,11 @@ use CloudCreativity\LaravelJsonApi\Http\Controllers\JsonApiController;
 use CloudCreativity\LaravelJsonApi\Http\Requests\CreateResource;
 use Illuminate\Http\Request;
 use App\Driver;
-use App\Ping;
+use App\PingDELETE;
 use Illuminate\Support\Facades\DB;
 use Neomerx\JsonApi\Document\Error as NeomerxError;
 use Neomerx\JsonApi\Exceptions\JsonApiException;
+use Illuminate\Support\Facades\Redirect;
 
 class PingController extends JsonApiController
 {
@@ -24,14 +25,14 @@ class PingController extends JsonApiController
   }
 
 
-    protected function searching($request )
-    {
-        exit( 'no get' );
-    }
     function create($store,  CreateResource $request )
     {
+        exit( 'no create' );
+    }
+    function searching( $request )
+    {
         //Request::header('pubapi')
-
+dd(66666666);
         // next is not appropriate enough ?
         $_request = app('request');
         $device_id = $_request->header("X-Device-ID"); // apache_request_headers()["X-Device-ID"] ;
@@ -44,8 +45,7 @@ class PingController extends JsonApiController
 
         #TODO security check via headers SIGNATURE
 
-        $driver = Driver::where('device_id', $device_id)->where('blocked', 0 )->with('PingState')->first();
-
+        $driver = Driver::where('device_id', $device_id)->where('blocked', 0 )->first();
 
         if(!$data) {
             $error =  new NeomerxError(null, null, 405, '405', 'Payload error', 'No payload');
@@ -75,8 +75,6 @@ class PingController extends JsonApiController
 
         $data->lat = round((float)$data->lat, 12) ;
         $data->long= round((float)$data->long, 12);
-        $data->driver_id = $driver->id; // driver id from http header
-
 
         if(!$data->lat) unset($data->lat);  // we dont need zero coordinates
         if(!$data->long) unset($data->long);  // its better to retain the last real coordinate instead of updating it with zero
@@ -84,10 +82,17 @@ class PingController extends JsonApiController
 
         // create ping and pingmoment
 
+            $data->count = DB::raw('count+1');
+
+            $driver->update((array)$data);
 
 
-        if($driver->PingState) {
-            // update
+
+       // return Redirect::to(json_api( )->url()->read('ping', $driver ->id ) );
+        // exit;
+
+
+            // PING MOMENT
 
             /*
 
@@ -104,20 +109,8 @@ class PingController extends JsonApiController
                       }*/
 
 
-            $data->count = DB::raw('count+1');
-            $driver->PingState->update((array)$data);
 
 
-        } else {
-
-
-            // insert
-            Ping::create((array)$data);
-
-            return true;
-
-            dd(8888888,(array)$data);
-        }
 
 
     }
