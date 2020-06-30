@@ -5,11 +5,12 @@ namespace App\Providers;
 
 
 use CloudCreativity\LaravelJsonApi\Document\Error\Error;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use App\OrderStatus;
 use Neomerx\JsonApi\Document\Error as NeomerxError;
 use Neomerx\JsonApi\Exceptions\JsonApiException;
-
+use Illuminate\Support\Facades\File;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -31,6 +32,25 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+
+
+        //  лог всех mysql запросов
+        DB::listen(function($query) {
+            File::append(
+                storage_path('/logs/query.log'),
+                date("r") . ":" . $query->time . ":" . $query->sql . ' [' . implode(', ', $query->bindings) . ']' . PHP_EOL
+            );
+        });
+
+
+
+
+
+
+
+
+
+
         //
 /*         OrderStatus::saving (function ( $data ) {
 

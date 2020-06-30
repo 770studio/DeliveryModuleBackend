@@ -23,7 +23,7 @@ JsonApi::register('default')->routes(function ($api) {
     $api->resource('driver_vehicles')->relationships(function ($relations) {
 
     });
-/*    $api->resource('pings')->relationships(function ($relations) {
+/*     $api->resource('ping')->relationships(function ($relations) {
 
     });*/
 
@@ -37,7 +37,15 @@ JsonApi::register('default')->routes(function ($api) {
 });
 
 
+JsonApi::register('default')->routes(function ($api, $router) {
+    $api->resource('ping')->controller('PingController');
+});
+
+
+
+
+/*
 JsonApi::register('default')->routes(function ($api) {
     $api->get('/ping', 'Ping@checkin');
 
-});
+});*/
