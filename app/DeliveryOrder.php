@@ -23,6 +23,19 @@ class DeliveryOrder extends Model
 
     ];
 
+    public function Driver()
+    {
+        return $this->belongsTo('App\Driver' , 'order_id', 'order_id');
+    }
+
+    public function scopeNoId($q)
+    {
+
+    //    dd($q->first()->forget('id'), 99999999);
+     //   return $q->get();
+    }
+
+
     public function setJobState(  $state )
     {
         $status = @self::getOrderStatus($state) ;

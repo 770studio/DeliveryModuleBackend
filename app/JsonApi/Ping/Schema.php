@@ -27,15 +27,17 @@ class Schema extends SchemaProvider
      *      the domain record being serialized.
      * @return array
      */
-    public function getAttributes($Driver)
+    public function getAttributes($Driver )
     {
+
+
 
         //dd(9999999,$resource, $resource->hasAssignment()  ); // $resource->Driver->hasAssignment(
       //  $driver->hasAssignment();
         #TODO security check via headers SIGNATURE
 
 
-
+ // mutation
 
         return  $Driver->checkin() +
             [

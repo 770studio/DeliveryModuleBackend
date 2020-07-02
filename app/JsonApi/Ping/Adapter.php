@@ -40,7 +40,7 @@ class Adapter extends AbstractAdapter
     public function __construct(StandardStrategy $paging)
     {
 
-
+// the only possible is GET ping/DEVICE_ID
         parent::__construct(new Driver(), $paging);
 
 
@@ -69,13 +69,13 @@ class Adapter extends AbstractAdapter
 
 
     protected function reading( $record, $request) {
-
+dd(6666666);
 
     }
 
 
-    protected function creating(PingDELETE $ping, $resource)
-    {
+    protected function creating( $ping, $resource)
+    { dd(777777777);
 /*
 $error =  new NeomerxError(
             null,
