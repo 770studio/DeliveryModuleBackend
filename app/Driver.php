@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Neomerx\JsonApi\Document\Error as NeomerxError;
 use Neomerx\JsonApi\Exceptions\JsonApiException;
 
+
 class Driver extends Model
 {
     protected $fillable = ['name', 'device_id', 'blocked', 'available',  'order_status', 'order_id', 'count', 'lat', 'long'];
@@ -19,6 +20,20 @@ class Driver extends Model
 
     public function PingMoment() {
         return $this->hasMany('App\PingMoment', 'driver_id', 'id');
+    }
+    public function LastPingMoment() {
+        return $this->hasMany('App\PingMoment', 'driver_id', 'id') ->latest()->firstOrFail();
+        try {
+
+            $anyone = $this->hasMany('App\PingMoment', 'driver_id', 'id')  ;
+
+            dd( $anyone );
+
+
+
+        } catch(\Exception $e) {
+            dd($e);
+        }
     }
 
     public function DeliveryOrder() {
@@ -97,9 +112,8 @@ class Driver extends Model
         $lat = round((float)$data->lat, 12) ;
         $long = round((float)$data->long, 12);
 
-        if($lat) array_push($ping, ['lat' => $lat] ); // we dont need zero coordinates
-        if($long ) array_push($ping, ['long' => $long] );  // its better to retain the last real coordinate instead of updating it with zero
-
+        if($lat) $ping ['lat' ] = $lat ; // we dont need zero coordinates
+        if($long ) $ping ['long'] = $long ;  // its better to retain the last real coordinate instead of updating it with zero
 
         $Driver->update( $ping );
         // pingmoment
@@ -109,15 +123,24 @@ class Driver extends Model
         $last_lat =  round( (float)str_replace(',', '.', $Driver->lat), 12) ;
         $last_long =  round( (float)str_replace(',', '.', $Driver->long), 12) ;
         // location changed or status changed or no pingmoment at all = new record
-        if($Driver->PingMoment->isEmpty()  || $Status_changed || ($lat && $lat !=$last_lat) || ($long && $long!= $last_long) ) {
-            $ping['count'] = DB::raw('count+1');
+
+
+            // add order id and status
+            $ping['order_id'] = (int)@$Driver->order_id;
+            $ping['order_status'] = (int)@$Driver->order_status;
+
+        if( !$Driver->PingMoment()->exists() || $Status_changed || ($lat && $lat !=$last_lat) || ($long && $long!= $last_long) ) {
             $Driver->PingMoment()->create( $ping );
-        } else  $Driver->PingMoment()->update( $ping );
+        } else  {
+            $ping['count'] = DB::raw('count+1');
+           // dd($Driver->PingMoment()->);
+            $Driver->LastPingMoment()->update( $ping );
+        }
 
 
 
 
-        dd(  $Driver->PingMoment, 77777 );
+
 
 
         return ['status_changed' => $Status_changed,
@@ -134,21 +157,7 @@ class Driver extends Model
         // exit;
 
 
-        // PING MOMENT
 
-        /*
-
-
-                  // just need to know if the location changed
-                  $last_lat =  round( (float)str_replace(',', '.', $driver->PingState->lat), 12) ;
-                  $last_long =  round( (float)str_replace(',', '.', $driver->PingState->long), 12) ;
-
-
-
-                  $count = 0; // updates with same location
-                  if( ($data->lat && $data->lat !=$last_lat) || ($data->long && $data->long!= $last_long) ) {
-                      $count = DB::raw('count+1');
-                  }*/
 
 
 
