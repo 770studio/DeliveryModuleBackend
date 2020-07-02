@@ -118,6 +118,7 @@ class Driver extends Model
         // pingmoment
         //
         // just need to know if the location or status changed
+        // so we track the location changes  as well as  status changes
         $ping['count'] = 1; // if insert then 1 if update then count+1
         $last_lat =  round( (float)str_replace(',', '.', $Driver->lat), 12) ;
         $last_long =  round( (float)str_replace(',', '.', $Driver->long), 12) ;

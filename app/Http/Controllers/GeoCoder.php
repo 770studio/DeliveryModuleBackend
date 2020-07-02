@@ -30,7 +30,7 @@ class GeoCoder extends Controller
 
 
         $job->delivery_lat = $geo['lat'];
-        $job->delivery_lng = $geo['lng'];
+        $job->delivery_long = $geo['lng'];
         $job->geo_accuracy = $geo['accuracy'];
         $job->formatted_address = $geo['formatted_address'];
         $job->location_id = $geo['id'];
