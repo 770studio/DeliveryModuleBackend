@@ -50,22 +50,22 @@ class Driver extends Model
         // next is not appropriate enough ?
         $_request = app('request');
         // $device_id = $_request->header("X-Device-ID"); // apache_request_headers()["X-Device-ID"] ;
-        $data = json_decode($_request->getContent() );
+        $request = json_decode($_request->getContent() );
 
         $order_statuses = OrderStatus::asc();
         $status_completed = $order_statuses->last();
 
 
-        if(!$data) {
+        if(!$request) {
             $error =  new NeomerxError(null, null, 405, '405', 'Payload error', 'No payload');
             throw new JsonApiException($error, 405);
         }
 
 
-        $data = @$data->data;
+        $request = @$request->data;
 
 
-        if(!isset( $data->type) || $data->type != 'ping' ) {
+        if(!isset( $request->type) || $request->type != 'ping' ) {
 
             $error =  new NeomerxError(null, null, 405, '405', 'Endpoint error', 'Wrong endpoint');
             throw new JsonApiException($error, 405);
@@ -74,18 +74,17 @@ class Driver extends Model
 
 
 
+        // digging deeper
+        $request = $request->attributes; // request from app
 
-        $data = $data->attributes; // request from app
-
-        $Assignment = [];
         $Status_changed = false; //TODO
 
         // status change
-       // dd( $Driver->hasAssignment() );
-        if($Driver->hasAssignment() ) {
-            // driver has an order to be delivered
 
-            if($Driver->order_status != @$data->order_status ) {
+        if($Driver->hasAssignment() ) {
+            // driver has an order to deliver
+
+            if($Driver->order_status != @$request->order_status ) {
                 #TODO status change
 
 
@@ -95,7 +94,7 @@ class Driver extends Model
 
 
             $asgnmt= new Assignment( $Driver );
-            $Assignment = $asgnmt->getDetails();
+
 
 
 
@@ -109,8 +108,8 @@ class Driver extends Model
         // ping
         $ping = ['count' => DB::raw('count+1') ]; // always update, driver record shd already exist anyway its created on driver creation
 
-        $lat = round((float)$data->lat, 12) ;
-        $long = round((float)$data->long, 12);
+        $lat = round((float)$request->lat, 12) ;
+        $long = round((float)$request->long, 12);
 
         if($lat) $ping ['lat' ] = $lat ; // we dont need zero coordinates
         if($long ) $ping ['long'] = $long ;  // its better to retain the last real coordinate instead of updating it with zero
@@ -150,7 +149,7 @@ class Driver extends Model
                  'next_order_status_caption'  => null , //TODO
 
 
-        ]   +  $Assignment ;
+        ]   +   $asgnmt->getDetails();
 
 
         // return Redirect::to(json_api( )->url()->read('ping', $driver ->id ) );
