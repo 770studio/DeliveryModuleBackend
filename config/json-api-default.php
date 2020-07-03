@@ -67,7 +67,7 @@ return [
     */
     'resources' => [
         'driver_vehicles' => \App\Driver::class,
-        'ping' => \App\Driver::class,
+        'ping' => \App\DriverPing::class,
         'order_status' => \App\OrderStatus::class,
         'settings' => \App\Settings::class,
     ],

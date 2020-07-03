@@ -32,10 +32,9 @@ class Schema extends SchemaProvider
         return [
             'name' => $resource->name,
             'index' => $resource->index,
-            'is_rejectable' => $resource->is_rejectable,
-            'is_initial' => $resource->is_initial,
-            'is_final' => $resource->is_final,
+            'is_rejectable' => (bool) $resource->is_rejectable,
             'caption' => $resource->status_caption,
+            'text' => $resource->status_text,
            // 'parent_id' => 0,
 
         ];

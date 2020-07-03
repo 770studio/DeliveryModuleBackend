@@ -2,13 +2,15 @@
 
 namespace App\JsonApi\Ping;
 
-use App\Driver;
-use App\PingDELETE;
+use App\DriverPing;
+
 use CloudCreativity\LaravelJsonApi\Eloquent\AbstractAdapter;
 use CloudCreativity\LaravelJsonApi\Pagination\StandardStrategy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
+use Exception;
+use Neomerx\JsonApi\Contracts\Encoder\Parameters\EncodingParametersInterface;
 use Neomerx\JsonApi\Document\Error as NeomerxError;
 use Neomerx\JsonApi\Exceptions\JsonApiException;
 
@@ -41,7 +43,7 @@ class Adapter extends AbstractAdapter
     {
 
 // the only possible is GET ping/DEVICE_ID
-        parent::__construct(new Driver(), $paging);
+        parent::__construct(new DriverPing(), $paging);
 
 
 
@@ -75,7 +77,9 @@ dd(6666666);
 
 
     protected function creating( $ping, $resource)
-    { dd(777777777);
+    {
+       // throw new Exception("Ain't no create");
+        dd(777777777);
 /*
 $error =  new NeomerxError(
             null,
@@ -93,6 +97,19 @@ $error =  new NeomerxError(
        // dd($ping, $resource);
         //$video->{$video->getKeyName()} = $resource['id'];
     }
+
+
+
+
+     protected function queryAll($query, EncodingParametersInterface $parameters) {
+
+       return false;
+         dd(333333333);
+    }
+
+
+
+
 
 
 }

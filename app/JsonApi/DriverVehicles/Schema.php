@@ -47,10 +47,7 @@ class Schema extends SchemaProvider
     public function getRelationships($resource, $isPrimary, array $includeRelationships)
     {
         return [
-            'ping' => [
-                self::SHOW_SELF => true,
-                self::SHOW_RELATED => true,
-            ]
+
         ];
     }
 

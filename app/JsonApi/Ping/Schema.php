@@ -2,6 +2,7 @@
 
 namespace App\JsonApi\Ping;
 
+use Exception;
 use Neomerx\JsonApi\Schema\SchemaProvider;
 
 class Schema extends SchemaProvider
@@ -19,6 +20,7 @@ class Schema extends SchemaProvider
      */
     public function getId($resource)
     {
+       // if(!$resource->getRouteKey()) throw new Exception('no id');
         return (string) $resource->getRouteKey();
     }
 
@@ -27,7 +29,7 @@ class Schema extends SchemaProvider
      *      the domain record being serialized.
      * @return array
      */
-    public function getAttributes($Driver )
+    public function getAttributes( $Driver )
     {
 
 
@@ -39,10 +41,6 @@ class Schema extends SchemaProvider
 
  // mutation
 
-        return  $Driver->checkin() +
-            [
-            'created-at' => $Driver->created_at->toAtomString(),
-            'updated-at' => $Driver->updated_at->toAtomString(),
-        ];
+        return  $Driver->checkin() ;
     }
 }
