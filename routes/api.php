@@ -37,9 +37,13 @@ JsonApi::register('default')->routes(function ($api) {
 });
 
 
+
+
 JsonApi::register('default')->routes(function ($api, $router) {
     $api->resource('ping'); //->controller('PingController');
 });
+
+
 
 
 

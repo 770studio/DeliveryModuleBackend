@@ -65,7 +65,7 @@ class DriverPing extends Driver
 
 
 
-            $asgnmt= new Assignment( $Driver );
+            $asgnmt = new Assignment( $Driver );
 
 
 
@@ -120,7 +120,7 @@ class DriverPing extends Driver
                  'order_status_caption'  => null , //TODO
                  'next_order_status'  => null , //TODO
                  'next_order_status_caption'  => null , //TODO
-                 'assignment' => $asgnmt->getDetails(),
+                 'assignment' => isset($asgnmt) ?  $asgnmt->getDetails() : null,
                  'statuses' => OrderStatus::RichArray(),
                  'settings' => [],
 
