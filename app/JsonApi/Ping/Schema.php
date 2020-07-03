@@ -20,8 +20,10 @@ class Schema extends SchemaProvider
      */
     public function getId($resource)
     {
-       // if(!$resource->getRouteKey()) throw new Exception('no id');
-        return (string) $resource->getRouteKey();
+
+     // if(!$resource->getRouteKey()) throw new Exception('no id');
+     //   return (string) $resource->getRouteKey();
+        return (string) $resource->id ;
     }
 
     /**

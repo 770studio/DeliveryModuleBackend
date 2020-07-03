@@ -12,7 +12,7 @@ use Neomerx\JsonApi\Exceptions\JsonApiException;
 class DriverPing extends Driver
 {
 
-    protected $primaryKey = 'device_id';
+
 
 
     function checkin()
@@ -114,9 +114,9 @@ class DriverPing extends Driver
 
 
 
-
         return ['status_changed' => $Status_changed,
                  'order_status'  => $Driver->order_status,
+                 'device_id'  => $Driver->device_id,
                  'order_status_caption'  => null , //TODO
                  'next_order_status'  => null , //TODO
                  'next_order_status_caption'  => null , //TODO
