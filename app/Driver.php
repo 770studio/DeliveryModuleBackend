@@ -13,7 +13,7 @@ class Driver extends Model
 
 
 {
-    protected $fillable = ['name', 'device_id', 'blocked', 'available',  'order_status', 'order_id', 'count', 'lat', 'long'];
+    protected $fillable = ['name', 'device_id', 'blocked', 'available',  'count', 'lat', 'long'];
     protected $table = "drivers";
 
     function __construct(array $attributes = [])
@@ -23,8 +23,8 @@ class Driver extends Model
 
     public function hasAssignment() {
 
-      return (bool)$this->order_id && $this->order_status != OrderStatus::asc()->last()->id;
-  }
+        return (bool)$this->order_id; // && $this->order_status != OrderStatus::asc()->last()->id;
+    }
 
     public function PingMoment() {
         return $this->hasMany('App\PingMoment', 'driver_id', 'id');

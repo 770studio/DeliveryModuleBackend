@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Neomerx\JsonApi\Document\Error as NeomerxError;
 use Neomerx\JsonApi\Exceptions\JsonApiException;
-
+use Exception;
 
 
 class DriverPing extends Driver
@@ -18,6 +18,9 @@ class DriverPing extends Driver
     function checkin()
     {
         $Driver = &$this;
+
+        $Status_changed = $Order_rejected = false;
+        $ErrorMsg = '';
 
         // next is not appropriate enough ?
         $_request = app('request');
@@ -49,29 +52,81 @@ class DriverPing extends Driver
         // digging deeper
         $request = $request->attributes; // request from app
 
-        $Status_changed = false; //TODO
+
 
         // status change
 
         if($Driver->hasAssignment() ) {
             // driver has an order to deliver
+            $asgnmt = new Assignment( $Driver );
 
-            if($Driver->order_status != @$request->order_status ) {
-                #TODO status change
+            if(@$request->order_status && $Driver->order_status != @$request->order_status ) {
+                #  status change
+                try{
+                    if( OrderStatus::getNextStatusId( $Driver->order_status )  == $request->order_status ) {
+                        $Driver->order_status = $request->order_status;
+                        $Driver->save();
+                        $Status_changed = true;
+                        $Driver->refresh();
+                    } else throw new Exception('none conseqentive status');
+
+                    if($asgnmt->isCompleted()) {
+                        // free the driver
+                        $Driver->available = 1;
+                        $Driver->save();
+                    }
+
+                }  catch(Exception $e) {
+                    $Status_changed = false;
+                    $ErrorMsg = 'There was a problem with updating the status. Please try again later.';
+                }
 
 
-                $Driver->refresh();
             }
 
 
 
-            $asgnmt = new Assignment( $Driver );
+            if(@$request->reject_order == "yes"  ) {
+
+                #  try to reject
+                try{
+                    if(! OrderStatus::isRejectable( $Driver->order_status  ) ) {
+
+                       $r = new RejectedOrders;
+                       $r->driver_id = $Driver->id;
+                       $r->order_id = $Driver->order_id;
+                       $r->save();
+
+                       $Driver->order_id = 0;
+                       $Driver->available = 1;
+                       $Driver->save();
+                       $Driver->refresh();
+
+                    } else throw new Exception('unable to reject');
+
+
+                        $Order_rejected = true;
+
+                }  catch(Exception $e) {
+                    $Order_rejected = false;
+                    $ErrorMsg = 'There was a problem rejecting the assignment. Please try again later.';
+                }
+
+
+
+
+
+
+            }
+
+
 
 
 
 
 
         }
+
 
 
 
@@ -97,33 +152,45 @@ class DriverPing extends Driver
         // location changed or status changed or no pingmoment at all = new record
 
 
-            // add order id and status
-            $ping['order_id'] = (int)@$Driver->order_id;
-            $ping['order_status'] = (int)@$Driver->order_status;
+        // add order id and status
+        $ping['order_id'] = (int)@$Driver->order_id;
+        $ping['order_status'] = (int)@$Driver->order_status;
 
         if( !$Driver->PingMoment()->exists() || $Status_changed || ($lat && $lat !=$last_lat) || ($long && $long!= $last_long) ) {
             $Driver->PingMoment()->create( $ping );
         } else  {
             $ping['count'] = DB::raw('count+1');
-           // dd($Driver->PingMoment()->);
+            // dd($Driver->PingMoment()->);
             $Driver->LastPingMoment()->update( $ping );
         }
 
 
+        $status_id = (int)$Driver->order_status;
 
+        return [
+            'status_changed' => $Status_changed,
+             'order_rejected' => $Order_rejected,
+            'error' => (bool) $ErrorMsg,
+            'errorMsg' =>  $ErrorMsg,
+            'order_id'  => $Driver->order_id,
+            'order_accepted'  => isset($asgnmt) && $asgnmt->isAccepted() ?  true : false,
+            'order_completed'  => isset($asgnmt) && $asgnmt->isCompleted() ?  true : false,
+            'is_new'  => isset($asgnmt) && $asgnmt->isNew() ?  true : false,
 
+            'device_id'  => $Driver->device_id,
 
-
-        return ['status_changed' => $Status_changed,
-                 'order_status'  => $Driver->order_status,
-                 'order_accepted'  => isset($asgnmt) && $asgnmt->isAccepted() ?  true : false,
-                 'device_id'  => $Driver->device_id,
-                 'order_status_caption'  => null , //TODO
-                 'next_order_status'  => null , //TODO
-                 'next_order_status_caption'  => null , //TODO
-                 'assignment' => isset($asgnmt) ?  $asgnmt->getDetails() : null,
-                 //'statuses' => OrderStatus::RichArray(),
-                 'settings' => [],
+            'order_status_id'  => $status_id,
+            'order_status'  => (bool)$status_id,
+            'order_status_caption'  => OrderStatus::getStatusCaption( $status_id ),
+            'order_status_text'  => OrderStatus::getStatusText( $status_id )  ,
+            'order_has_next_status' => (bool)OrderStatus::getNextStatusId( $status_id ),
+            'next_order_status_id'  => OrderStatus::getNextStatusId( $status_id ) ,
+            'next_order_status_caption'  => OrderStatus::getNextStatusCaption( $status_id ) ,
+            'next_order_status_text'  => OrderStatus::getNextStatusText( $status_id ) ,
+            'is_rejectable'  => (bool)OrderStatus::isRejectable( $status_id )  ,
+            'assignment' => isset($asgnmt) ?  $asgnmt->getDetails() : null,
+            //'statuses' => OrderStatus::RichArray(),
+            'settings' => [],
 
 
 
