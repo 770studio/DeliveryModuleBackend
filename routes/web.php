@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
+EXIT('no web');
 
 Route::get('/', function () {
     return view('welcome');
