@@ -30,7 +30,7 @@ class OrderStatus extends Model
             self::$instance = self::Asc();
 
         }
-        $rich = self::$instance;
+        $rich = self::$instance->where('id', '!=', 0 );
 
         $first_id = $rich->first()->id ;
         $last_id = $rich->last()->id ;

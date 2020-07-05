@@ -13,7 +13,7 @@ class Driver extends Model
 
 
 {
-    protected $fillable = ['name', 'device_id', 'blocked', 'available',  'count', 'lat', 'long'];
+    protected $fillable = ['name', 'device_id', 'blocked', 'available',  'count', 'lat', 'long', 'order_status', 'order_id'];
     protected $table = "drivers";
 
     function __construct(array $attributes = [])
