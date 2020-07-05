@@ -18,6 +18,7 @@ class Adapter extends AbstractAdapter
 
     protected $attributes = [
         'caption' => 'status_caption',
+        'text' => 'status_text',
     ];
 
 
