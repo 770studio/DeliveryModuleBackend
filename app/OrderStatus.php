@@ -66,7 +66,7 @@ class OrderStatus extends Model
         else {
             $status = $rich->find($satus_id);
             if($status->is_last ) return false; // no next status
-            $next_index = $status->index + 1;
+            $next_index = $rich->where('index', '>', $status->index  )->min('index');  //$status->index + 1;
         }
 
         return $rich->where('index',  $next_index )->first();
