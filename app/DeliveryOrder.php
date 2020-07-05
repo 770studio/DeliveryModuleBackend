@@ -5,7 +5,7 @@ namespace App;
 
 
 use Illuminate\Database\Eloquent\Model;
-use mysql_xdevapi\Exception;
+use Exception;
 
 
 class DeliveryOrder extends Model
@@ -51,8 +51,14 @@ class DeliveryOrder extends Model
     public static function getJob( $geoJob = false )
     {
 
-        $state = $geoJob ? 'Not started' : 'Got the location'; // either it is geo or assignment  task
-        return self::where('current_status', self::getOrderStatus($state) )->first();
+
+        $not_started = self::getOrderStatus('Not started');
+        $got_location = self::getOrderStatus('Got the location');
+        $cancelled = self::getOrderStatus('Cancelled');
+
+        $state = $geoJob ? [$not_started] : [$got_location, $cancelled]; // either it is geo or assignment  task
+
+        return self::whereIn('current_status', $state )->first();
     }
     public static function getOrderStatus( $status_name )
     {

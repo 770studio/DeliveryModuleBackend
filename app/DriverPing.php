@@ -74,11 +74,15 @@ class DriverPing extends Driver
                         // free the driver
                         $Driver->available = 1;
                         $Driver->save();
+
+                        $Driver->DeliveryOrder->setJobState('Completed');
+
                     }
 
                 }  catch(Exception $e) {
                     $Status_changed = false;
                     $ErrorMsg = 'There was a problem with updating the status. Please try again later.';
+
                 }
 
 
@@ -90,26 +94,30 @@ class DriverPing extends Driver
 
                 #  try to reject
                 try{
-                    if(! OrderStatus::isRejectable( $Driver->order_status  ) ) {
+                    if( OrderStatus::isRejectable( $Driver->order_status  ) ) {
 
-                       $r = new RejectedOrders;
-                       $r->driver_id = $Driver->id;
-                       $r->order_id = $Driver->order_id;
-                       $r->save();
+                        $r = new RejectedOrders;
+                        $r->driver_id = $Driver->id;
+                        $r->order_id = $Driver->order_id;
+                        $r->save();
 
-                       $Driver->order_id = 0;
-                       $Driver->available = 1;
-                       $Driver->save();
-                       $Driver->refresh();
+                        $Driver->order_id = 0;
+                        $Driver->available = 1;
+                        $Driver->save();
+
+                        $Driver->DeliveryOrder->setJobState('Cancelled');
+
+                        $Driver->refresh();
 
                     } else throw new Exception('unable to reject');
 
 
-                        $Order_rejected = true;
+                    $Order_rejected = true;
 
                 }  catch(Exception $e) {
                     $Order_rejected = false;
                     $ErrorMsg = 'There was a problem rejecting the assignment. Please try again later.';
+                    //throw new Exception( $e->getMessage() );
                 }
 
 
@@ -169,7 +177,7 @@ class DriverPing extends Driver
 
         return [
             'status_changed' => $Status_changed,
-             'order_rejected' => $Order_rejected,
+            'order_rejected' => $Order_rejected,
             'error' => (bool) $ErrorMsg,
             'errorMsg' =>  $ErrorMsg,
             'order_id'  => $Driver->order_id,

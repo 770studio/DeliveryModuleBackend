@@ -26,6 +26,10 @@ class Driver extends Model
         return (bool)$this->order_id; // && $this->order_status != OrderStatus::asc()->last()->id;
     }
 
+    public function RejectedOrders() {
+        return $this->hasMany('App\RejectedOrders', 'driver_id', 'id');
+    }
+
     public function PingMoment() {
         return $this->hasMany('App\PingMoment', 'driver_id', 'id');
     }
@@ -40,7 +44,18 @@ class Driver extends Model
 
 
 
+    function assignOrder( $order_id ) {
+        if($this->blocked || !$this->available) return false;
+        if(!DeliveryOrder::where('order_id',$order_id )->exists()  ) return false;
+        if(Driver::where('order_id',$order_id )->exists() ) return false;
 
+        $this->order_id = $order_id;
+        $this->order_status = 0;
+        $this->available = 0;
+        $this->save();
+
+
+    }
 
 
 

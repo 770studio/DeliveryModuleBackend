@@ -41,7 +41,7 @@ class OrderDeliveryServiceConsoleCommand extends Command
     public function handle()
     {
 
-        OrderDeliveryService::RunWithCron();
+         OrderDeliveryService::RunWithCron() ;
 
 
 

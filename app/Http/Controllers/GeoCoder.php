@@ -15,7 +15,7 @@ class GeoCoder extends Controller
 
         if (!$job) return 'no job';
 
-        // make cache or at least check the db for the same address
+        //TODO make cache or at least check the db for the same address
 
         // started
         $job->setJobState('In progress');
@@ -24,6 +24,7 @@ class GeoCoder extends Controller
         $geo = GeoLocation::getLocationByAddress($job->customer_delivery_address);
         if (!$geo) {
             // TODO critical exception
+            $job->setJobState('On hold');
             throw new Exception('Geocoder error');
         }
 
