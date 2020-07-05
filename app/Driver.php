@@ -16,6 +16,11 @@ class Driver extends Model
     protected $fillable = ['name', 'device_id', 'blocked', 'available',  'order_status', 'order_id', 'count', 'lat', 'long'];
     protected $table = "drivers";
 
+    function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+    }
+
     public function hasAssignment() {
 
       return (bool)$this->order_id && $this->order_status != OrderStatus::asc()->last()->id;
@@ -32,7 +37,6 @@ class Driver extends Model
     public function DeliveryOrder() {
         return $this->hasOne('App\DeliveryOrder', 'order_id', 'order_id' );
     }
-
 
 
 

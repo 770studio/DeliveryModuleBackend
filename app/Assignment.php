@@ -22,6 +22,9 @@ function getDetails() {
 
 }
 
+function isAccepted() {
+    return (bool)$this->Driver->order_id && $this->Driver->order_status != OrderStatus::asc()->first()->id;
+}
 
 
 

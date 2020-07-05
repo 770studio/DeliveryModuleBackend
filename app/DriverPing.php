@@ -116,12 +116,13 @@ class DriverPing extends Driver
 
         return ['status_changed' => $Status_changed,
                  'order_status'  => $Driver->order_status,
+                 'order_accepted'  => isset($asgnmt) && $asgnmt->isAccepted() ?  true : false,
                  'device_id'  => $Driver->device_id,
                  'order_status_caption'  => null , //TODO
                  'next_order_status'  => null , //TODO
                  'next_order_status_caption'  => null , //TODO
                  'assignment' => isset($asgnmt) ?  $asgnmt->getDetails() : null,
-                 'statuses' => OrderStatus::RichArray(),
+                 //'statuses' => OrderStatus::RichArray(),
                  'settings' => [],
 
 
