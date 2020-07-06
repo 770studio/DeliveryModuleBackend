@@ -19,6 +19,7 @@ class Adapter extends AbstractAdapter
 
 
     protected $primaryKey = 'device_id';
+    protected $fillable = ['count'];
 
     /**
      * Mapping of JSON API attribute field names to model keys.
@@ -41,7 +42,7 @@ class Adapter extends AbstractAdapter
      */
     public function __construct(StandardStrategy $paging)
     {
-
+//dd(999999999);
 // the only possible is GET ping/DEVICE_ID
         parent::__construct(new DriverPing(), $paging);
 

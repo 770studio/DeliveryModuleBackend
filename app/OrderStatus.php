@@ -49,14 +49,20 @@ class OrderStatus extends Model
 
     }
 
+    public static function safeFind( $satus_id, $varname = 'varname' ) {
+        if(!$satus_id) return null;
+        $pull = self::Asc()->find($satus_id);
+        if(!$pull ) return false;
+        return $pull ->{$varname};
+    }
 
     public static function getStatusText( $satus_id ) {
-        if(!$satus_id) return null;
-        return self::Asc()->find($satus_id)->status_text;
+        return self::safeFind($satus_id, 'status_text');
     }
     public static function getStatusCaption( $satus_id ) {
-        if(!$satus_id) return null;
-        return self::Asc()->find($satus_id)->status_caption;
+
+        return self::safeFind($satus_id, 'status_caption');
+
     }
 
     public static function getNextStatus( $satus_id ) {
@@ -65,7 +71,7 @@ class OrderStatus extends Model
         if(!$satus_id)  $next_index = $rich->min('index');
         else {
             $status = $rich->find($satus_id);
-            if($status->is_last ) return false; // no next status
+            if(!$status || $status->is_last ) return false; // no next status
             $next_index = $rich->where('index', '>', $status->index  )->min('index');  //$status->index + 1;
         }
 
