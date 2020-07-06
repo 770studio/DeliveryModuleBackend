@@ -19,7 +19,7 @@ class Adapter extends AbstractAdapter
 
 
     protected $primaryKey = 'device_id';
-    protected $fillable = ['count'];
+    protected $fillable = ['count']; // no direct updates
 
     /**
      * Mapping of JSON API attribute field names to model keys.

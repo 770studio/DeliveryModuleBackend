@@ -3,6 +3,8 @@
 namespace App\JsonApi\DriverVehicles;
 
 use CloudCreativity\LaravelJsonApi\Validation\AbstractValidators;
+use CloudCreativity\LaravelJsonApi\Contracts\Validation\ValidatorInterface;
+use App\Driver;
 
 class Validators extends AbstractValidators
 {
@@ -56,5 +58,46 @@ class Validators extends AbstractValidators
             //
         ];
     }
+
+
+
+
+
+    public function update($record, array $document): ValidatorInterface
+    {
+        $validator = parent::update($record, $document);
+
+
+        //dd($record, 88888888888, $document);
+        $order_id = $document['data']['attributes']['order_id'];
+        $order_status = $document['data']['attributes']['order_status'];
+
+        if($order_id != $record->order_id ) {
+            // updating order_id
+            $validator->sometimes('order-id-update', 'required', function ($input) {
+                dd($input);
+                return !Driver::where('order_id', $order_id)->exists();
+
+
+            });
+
+        }
+        if($order_status != $record->order_status ) {
+            // updating order_status
+        }
+
+
+
+
+        return $validator;
+    }
+
+
+
+
+
+
+
+
 
 }
