@@ -32,6 +32,8 @@ class OrderDeliveryService extends Controller
 
 
           // get free Drivers
+
+  /*    HAVERSINE - not acceptable
           $query = Driver::where('blocked' , 0 )->where('available' , 1)
               ->whereDoesntHave('RejectedOrders', function (Builder $query) use ( $order_id ){
                   $query->where('order_id', $order_id );
@@ -40,7 +42,16 @@ class OrderDeliveryService extends Controller
 
           $driver = self::haversine($query, $job->merchant_lat, $job->merchant_long, $max_distance = 25000, 'kilometers', ['*'] );
           //   ->first() ;
-          $driver = $driver->first();
+          $driver = $driver->first();*/
+
+
+          $availableDrivers = Driver::where('blocked' , 0 )->where('available' , 1)
+              ->whereDoesntHave('RejectedOrders', function (Builder $query) use ( $order_id ){
+                  $query->where('order_id', $order_id );
+              }) ->get();
+
+
+          dd($availableDrivers);
 
 
           if(!$driver) {

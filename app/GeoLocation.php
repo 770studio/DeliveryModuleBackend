@@ -23,7 +23,7 @@ class GeoLocation extends Model
 
         $geocoder->setApiKey(config('geocoder.key'));
 
-        $geocoder->setCountry(config('geocoder.country', 'US'));
+        $geocoder->setCountry(config('geocoder.country', 'MY'));
 
         $geo = $geocoder->getCoordinatesForAddress( $address );
 
@@ -50,5 +50,7 @@ class GeoLocation extends Model
 
 
     }
+
+
 
 }

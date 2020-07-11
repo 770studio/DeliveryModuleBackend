@@ -34,6 +34,6 @@ return [
      *
      * More info: https://developers.google.com/maps/documentation/javascript/geocoding#GeocodingRequests
      */
-    'country' => '',
+    'country' => 'MY',
 
 ];

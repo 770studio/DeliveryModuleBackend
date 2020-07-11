@@ -27,6 +27,11 @@ class DeliveryOrder extends Model
     {
         return $this->belongsTo('App\Driver' , 'order_id', 'order_id');
     }
+    public function DistanceMatrix()
+    {
+        return $this->hasOne('App\DistanceMatrix' );
+    }
+
 
     public function scopeNoId($q)
     {
