@@ -47,6 +47,12 @@ class DriverPing extends Driver
 
         }
 
+        if( $Driver->blocked ) {
+
+            $error =  new NeomerxError(null, null, 405, '405', 'Driver blocked', 'Driver blocked');
+            throw new JsonApiException($error, 405);
+
+        }
 
 
         // digging deeper
