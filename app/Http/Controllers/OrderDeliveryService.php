@@ -87,7 +87,7 @@ class OrderDeliveryService extends Controller
                   throw new Exception("no driver" ); // transaction roll back current_status
               }
 
-              $data = DistanceMatrix::Calculate($origin, $destinations->toArray()  );
+              $data = DistanceMatrix::Calculate($origin, $destinations->toArray(), $job->id   );
               $geodata = json_decode($data);
               if(!$geodata) {
 
@@ -111,8 +111,13 @@ class OrderDeliveryService extends Controller
 
                   }
 
+
+
                  // pick one
-              $driver = self::filterDrivers(  $availableDrivers, $job->merch_type );
+              $driver = self::filterOneDriver(  $availableDrivers, $job->merch_type );
+
+
+
               if(!$driver) {
                   $driver = $availableDrivers->where('distance', "!=", false )->first(); // anyone ?
               }
@@ -121,6 +126,8 @@ class OrderDeliveryService extends Controller
                   // no driver
                   throw new Exception("no driver" ); // transaction roll back current_status
               }
+
+
 
               if(!$driver->assignOrder( $order_id ) )  {
 
@@ -158,7 +165,7 @@ class OrderDeliveryService extends Controller
   }
 
 
-private function filterDrivers( Collection & $drvrs, $merch_type ) {
+private static function filterOneDriver(  & $drvrs, $merch_type ) {
 
       $prefs = VehiclePreference::Filtering();
 
@@ -171,7 +178,7 @@ private function filterDrivers( Collection & $drvrs, $merch_type ) {
                   ;
           });
 
-          if($filtered) return $filtered;
+          if($filtered) return $filtered->first();
       }
 
     return false;

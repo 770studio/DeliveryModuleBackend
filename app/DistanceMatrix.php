@@ -11,6 +11,9 @@ use Spatie\Geocoder\Geocoder;
 class DistanceMatrix extends Model
 {
 
+    protected $table = "distance_matrix";
+    protected $guarded = [];
+
     public function DeliveryOrder()
     {
         return $this->belongsTo('App\DeliveryOrder' );
@@ -18,7 +21,7 @@ class DistanceMatrix extends Model
 
 
 
-    public static function Calculate($origins, $destinations) {
+    public static function Calculate($origins, $destinations, $jobId ) {
         $client = new \GuzzleHttp\Client(['verify' => false ]);
 
         $res = $client->request('GET', 'https://maps.googleapis.com/maps/api/distancematrix/json?', [
@@ -41,18 +44,20 @@ class DistanceMatrix extends Model
 
        // echo $res->getHeader('content-type')[0];
 // 'application/json; charset=utf8'
-        return $res->getBody();
+       $body =  $res->getBody();
+
+        //save for future debug, TODO can be omitted on production
+        DistanceMatrix::updateOrCreate(
+            ['id' => $jobId],
+            ['data' =>$body]
+        );
 
 
+        return $body;
     }
 
 
 
- //         $location = new GeoLocation;
-    //
-    //        $location->location = json_encode($geo);
-    //
-    //        $location->save();
 
 
 
