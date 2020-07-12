@@ -70,6 +70,10 @@ return [
         'ping' => \App\DriverPing::class,
         'order_status' => \App\OrderStatus::class,
         'settings' => \App\Settings::class,
+        'distances' => \App\Distance::class,
+        'vehicle_types' => \App\VehicleType::class,
+        'merchant_types' => \App\MerchantType::class,
+        'vehicle_preferences' => \App\VehiclePreference::class,
     ],
 
     /*

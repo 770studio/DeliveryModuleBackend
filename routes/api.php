@@ -30,7 +30,18 @@ JsonApi::register('default')->routes(function ($api) {
     $api->resource('order_status')->relationships(function ($relations) {
 
     });
+    $api->resource('distances')->relationships(function ($relations) {
 
+    });
+    $api->resource('vehicle_types')->relationships(function ($relations) {
+
+    });
+    $api->resource('merchant_types')->relationships(function ($relations) {
+
+    });
+    $api->resource('vehicle_preferences')->relationships(function ($relations) {
+
+    });
     $api->resource('settings')->relationships(function ($relations) {
 
     });

@@ -38,6 +38,7 @@ class Schema extends SchemaProvider
             'long' => $resource->long,
             'order_id' => $resource->order_id,
             'order_status' => $resource->order_status,
+            'vehicle_type' => $resource->vehicle_type,
              'created-at' => $resource->created_at->toAtomString(),
              'updated-at' => $resource->updated_at->toAtomString(),
         ];

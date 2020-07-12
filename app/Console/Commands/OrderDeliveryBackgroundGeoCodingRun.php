@@ -39,7 +39,9 @@ class OrderDeliveryBackgroundGeoCodingRun extends Command
      */
     public function handle()
     {
-       echo  GeoCoder::RunWithCron();
+
+      //11.07.2020  dont need geocoding  AS WE ARE USING DISTANCE MARTIX
+     //  echo  GeoCoder::RunWithCron();
         // Geocoder::getCoordinatesForAddress('Samberstraat 69, Antwerpen, Belgium')
     }
 }

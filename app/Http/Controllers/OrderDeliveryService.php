@@ -17,7 +17,7 @@ class OrderDeliveryService extends Controller
 
       DB::transaction(function ()   {
 
-          $job = DeliveryOrder::getJob() ;
+          $job = DeliveryOrder::getJob( TRUE ) ;
           if(!$job) {
 
               dump( 'no job');
