@@ -21,9 +21,22 @@ class VehiclePreference extends Model
     }
 
 
+    public function Distance() {
+        return $this->hasOne('App\Distance', 'id', 'distance_id');
+    }
+    public function Mtype() {
+        return $this->hasOne('App\MerchantType', 'id', 'merchant_type');
+    }
+    public function Vtype() {
+        return $this->hasOne('App\VehicleType', 'id', 'vehicle_type');
+    }
 
+    public function scopeFiltering($query)
+    {
 
+        return $query->orderBy('index', 'asc')-> with(['Distance', 'Mtype', 'Vtype'])  ->get();
 
+    }
 
 
 }

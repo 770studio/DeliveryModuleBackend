@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 use App\Driver;
+use App\DistanceMatrix;
 use Illuminate\Http\Request;
 use App\DeliveryOrder;
+use App\VehiclePreference;
 use App\GeoLocation;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
@@ -17,16 +19,6 @@ class OrderDeliveryService extends Controller
 
       DB::transaction(function ()   {
 
-          $job = DeliveryOrder::getJob( TRUE ) ;
-          if(!$job) {
-
-              dump( 'no job');
-              return;
-          }
-
-          $prevState = $job->current_status;
-          $order_id = $job->order_id;
-          $job->setJobState(  'In progress' );
 
 
 
@@ -45,31 +37,117 @@ class OrderDeliveryService extends Controller
           $driver = $driver->first();*/
 
 
-          $availableDrivers = Driver::where('blocked' , 0 )->where('available' , 1)
-              ->whereDoesntHave('RejectedOrders', function (Builder $query) use ( $order_id ){
-                  $query->where('order_id', $order_id );
-              }) ->get();
 
 
-          dd($availableDrivers);
+
+          try{
 
 
-          if(!$driver) {
-              // no driver
-              $job->current_status = $prevState;
-              $job->save();
 
-              dump(  "no driver" );
+              $job = DeliveryOrder::getJob( TRUE ) ;
+              if(!$job) {
+
+                  dump( 'no job');
+                  return;
+              }
+
+              $prevState = $job->current_status;
+              $order_id = $job->order_id;
+              $job->setJobState(  'In progress' );
+
+
+
+
+              $availableDrivers = Driver::where('blocked' , 0 )->where('available' , 1)
+                  ->whereDoesntHave('RejectedOrders', function (Builder $query) use ( $order_id ){
+                      $query->where('order_id', $order_id );
+                  }) ->get();
+
+
+              $origin = [$job->customer_delivery_address];
+
+              $dests = 0;
+              foreach($availableDrivers as $item) {
+                  if($item->lat || $item->long) {
+                      $dests++;
+                      $item->destination = $item->lat . ',' . $item->long;
+                        //$dests[$item->id]  = $item->lat . ',' . $item->long;
+                  }
+              }
+
+              $destinations = $availableDrivers->where('destination', "!=", false )->pluck(  'destination', 'id' ) ;
+
+
+              if(!$destinations) {
+                  // no driver
+                  //  $job->current_status = $prevState;
+                  //  $job->save();
+
+
+                  throw new Exception("no driver" ); // transaction roll back current_status
+              }
+
+              $data = DistanceMatrix::Calculate($origin, $destinations->toArray()  );
+              $geodata = json_decode($data);
+              if(!$geodata) {
+
+                  Log::debug( $data);
+                  throw new Exception( "json can not be parsed" );
+
+              }
+
+                if($geodata->status != "OK") {
+                    Log::debug( $geodata );
+                    throw new Exception( "bad googleapi status:" . $geodata->status );
+                }
+
+                 // merge distance into $availableDrivers
+                  $k = 0;
+                  foreach($destinations as $id=>$d ) {
+
+                      if(isset($geodata->rows[0]->elements[$k]))
+                          $availableDrivers->find($id)->distance = $geodata->rows[0]->elements[$k]->distance->value;
+                          $k++;
+
+                  }
+
+                 // pick one
+              $driver = self::filterDrivers(  $availableDrivers, $job->merch_type );
+              if(!$driver) {
+                  $driver = $availableDrivers->where('distance', "!=", false )->first(); // anyone ?
+              }
+
+              if(!$driver) {
+                  // no driver
+                  throw new Exception("no driver" ); // transaction roll back current_status
+              }
+
+              if(!$driver->assignOrder( $order_id ) )  {
+
+                  #TODO critical exception
+                  throw new Exception("Order not assigned" );
+
+
+
+              }
+
+
+
+          } catch(Exception $e) {
+              $err = $e->getMessage();
+              dump( $err );
+              Log::debug( $err);
+              exit; // transaction roll back current_status
           }
 
 
-          elseif(!$driver->assignOrder( $order_id ) )  {
 
-              #TODO critical exception
-              dump(  "Order not assigned" );
 
-              //  'In progress'
-          }  else dump( "Order assigned successfully" );
+
+          dump( "Order " . $order_id  . " assigned successfully" );
+
+
+
 
 
 
@@ -80,7 +158,27 @@ class OrderDeliveryService extends Controller
   }
 
 
+private function filterDrivers( Collection & $drvrs, $merch_type ) {
 
+      $prefs = VehiclePreference::Filtering();
+
+      foreach($prefs as $pref) {
+          $filtered = $drvrs->filter(function ($item, $key) use ($pref, $merch_type) {
+              return
+                  $item->vehicle_type == $pref->vehicle_type   // Vehicle type matches
+                  && ( ! $pref->merchant_type  || $pref->Mtype->name  ==  $merch_type)   // merchant  type matches
+                  && ( isset($item->distance) && $item->distance >= $pref->Distance->from && $item->distance <= $pref->Distance->to )  //  distance  matches
+                  ;
+          });
+
+          if($filtered) return $filtered;
+      }
+
+    return false;
+
+
+
+}
 
 
 

@@ -52,7 +52,7 @@ class Driver extends Model
         $this->order_id = $order_id;
         $this->order_status = 0;
         $this->available = 0;
-        $this->save();
+        return $this->save();
 
 
     }
