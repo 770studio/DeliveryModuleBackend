@@ -55,7 +55,7 @@ class PaktecJob extends Command
 
         // update own items
 
-        $items = PaktecOwnItems::limit(5)->with('competitors')->get();
+        $items = PaktecOwnItems::limit(10)->with('competitors')->get();
         foreach($items as $item) {
             $this->updateItem(  $item );
             $minPrice = $item->competitors->min('price');
