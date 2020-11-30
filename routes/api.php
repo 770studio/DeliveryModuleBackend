@@ -45,6 +45,16 @@ JsonApi::register('default')->routes(function ($api) {
     $api->resource('settings')->relationships(function ($relations) {
 
     });
+
+    $api->resource('paktec-own-items')->relationships(function ($relations) {
+
+    });
+    $api->resource('paktec-competitors-items')->relationships(function ($relations) {
+
+    });
+
+
+
 });
 
 

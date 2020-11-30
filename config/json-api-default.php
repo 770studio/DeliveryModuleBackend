@@ -74,6 +74,12 @@ return [
         'vehicle_types' => \App\VehicleType::class,
         'merchant_types' => \App\MerchantType::class,
         'vehicle_preferences' => \App\VehiclePreference::class,
+
+
+        'paktec-own-items' => \App\PaktecOwnItems::class,
+        'paktec-competitors-items' => \App\PaktecCompetitorsItems::class,
+
+
     ],
 
     /*
